@@ -18,7 +18,6 @@ public class ClientRunnable implements Runnable, Observer {
     private final ServerService serverService;
     private User user; // это наш пользователь
     private final UserDao userDao; // подключили сюда и еще проинициализировали
-//    String messageFromClient = "";
     boolean isAutho = false;
     boolean isReg = false;
 
@@ -30,58 +29,33 @@ public class ClientRunnable implements Runnable, Observer {
 
         // чтобы считывать сообщение с клиента есть BufferedReader
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); // чтобы считать что-то с клиента берем InputStream
+
+        // проаерка на авторизацию и регистрацию
+//        String viewMessageClient = bufferedReader.readLine();
+        isAutho = bufferedReader.readLine().contains("!autho!");
+        isReg = bufferedReader.readLine().contains("!reg!");
+        if (isAutho) {
+            authorization(bufferedReader);
+            serverService.addObserver(this);
+        } else if (isReg) {
+            registration(bufferedReader);
+            serverService.addObserver(this);
+        } else {
+            throw new RuntimeException("Бяда-а-а-а-а!");
+        }
+
         // будем считывать с помощью цикла while - писать бесконечно
-
-//        System.out.println(bufferedReader.readLine().contains("!autho!"));
-
         // сообщение от клиента
         String messageFromClient;
-        messageFromClient = bufferedReader.readLine();
-        System.out.println(messageFromClient);
-
-        // начинаем цикл, где проверяем сообщение от клиента, и если оно пустое, заходим в цикл
-        while ((messageFromClient = bufferedReader.readLine()) == null){
-            if (messageFromClient.startsWith("!autho!")){ // Method invocation 'startsWith' will produce 'NullPointerException'
-                authorization(bufferedReader);
-                serverService.addObserver(this);
-            } else if (messageFromClient.startsWith("!reg!")){
-                registration(bufferedReader);
-                serverService.addObserver(this);
-            }
+        // начинаем цикл, где проверяем сообщение от клиента
+        while ((messageFromClient = bufferedReader.readLine()) != null) {
             System.out.println(user.getName() + ":" + messageFromClient);
             // с сервера отправляем сообщение всем
 //                serverService.notifyObserver(user.getName() + ":" + messageFromClient);
             // от клиента отправляем сообщение всем кроме себя
             serverService.notifyObserverExceptMe(user.getName() + ":" + messageFromClient, this);
         }
-
-
-
-//        // сообщение от клиента
-//        String messageFromClient;
-
-
-
-        // считываем readLine
-//        while ((messageFromClient = bufferedReader.readLine()) != null) {
-//
-//        }
-
-//        // проверка на то, что это авторизация или регистрация
-//        if (authorization(bufferedReader)) {
-//            // добавить Observer'a на сервере
-//            serverService.addObserver(this);
-//
-//            // считываем readLine
-//            while ((messageFromClient = bufferedReader.readLine()) != null) {
-//                System.out.println(user.getName() + ":" + messageFromClient);
-//                // с сервера отправляем сообщение всем
-////                serverService.notifyObserver(user.getName() + ":" + messageFromClient);
-//                // от клиента отправляем сообщение всем кроме себя
-//                serverService.notifyObserverExceptMe(user.getName() + ":" + messageFromClient, this);
-//            }
-//        }
-}
+    }
 
     // создаем метод авторизации
     @SneakyThrows
