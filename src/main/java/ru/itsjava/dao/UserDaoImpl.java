@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
         )) {
             // создали connection, создаем statement -> запрос к БД
             PreparedStatement preparedStatement = connection.
-                    prepareStatement("select count(*) cnt from schema_online_course.users where name = ? and password = ?");
+                    prepareStatement("select count(*) cnt from schema_online_course_2.users where name = ? and password = ?");
 
             // у prepareStatement проставляем параметры: 1-й - name, 2-й - password
             preparedStatement.setString(1, name);
@@ -65,7 +65,7 @@ public class UserDaoImpl implements UserDao {
         )) {
             // создали connection, создаем statement -> запрос к БД
             PreparedStatement preparedStatement = connection.
-                    prepareStatement("select count(*) cnt from schema_online_course.users where name = ? and password = ?");
+                    prepareStatement("select count(*) cnt from schema_online_course_2.users where name = ? and password = ?");
 
             // у prepareStatement проставляем параметры: 1-й - name, 2-й - password
             preparedStatement.setString(1, newName);
@@ -83,7 +83,7 @@ public class UserDaoImpl implements UserDao {
             // проверяем значение userCount
             if (userCount == 0) {
                 // если пользователя нет в БД, то создаем нового пользователя и вносим в БД
-                PreparedStatement preparedStatementNewUser = connection.prepareStatement("insert into schema_online_course.users(name, password) values (?, ?)");
+                PreparedStatement preparedStatementNewUser = connection.prepareStatement("insert into schema_online_course_2.users(name, password) values (?, ?)");
                 preparedStatementNewUser.setString(1, newName);
                 preparedStatementNewUser.setString(2, newPassword);
                 ResultSet resultSetNewUser = preparedStatementNewUser.executeQuery();
