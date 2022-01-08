@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
         )) {
             // создали connection, создаем statement -> запрос к БД
             PreparedStatement preparedStatement = connection.
-                    prepareStatement("select count(*) cnt from schema_online_course_2.users where name = ? and password = ?");
+                    prepareStatement("select count(*) cnt from schema_online_course.users where name = ? and password = ?");
 
             // у prepareStatement проставляем параметры: 1-й - name, 2-й - password
             preparedStatement.setString(1, name);
@@ -63,39 +63,18 @@ public class UserDaoImpl implements UserDao {
                 props.getValue("db.login"),
                 props.getValue("db.password")
         )) {
-            // создали connection, создаем statement -> запрос к БД
-            PreparedStatement preparedStatement = connection.
-                    prepareStatement("select count(*) cnt from schema_online_course.users where name = ? and password = ?");
+            // если пользователя нет в БД, то создаем нового пользователя и вносим в БД
+            PreparedStatement preparedStatementNewUser = connection.prepareStatement("insert into schema_online_course.users (name, password) values (?, ?)");
+            preparedStatementNewUser.setString(1, newName);
+            preparedStatementNewUser.setString(2, newPassword);
 
-            // у prepareStatement проставляем параметры: 1-й - name, 2-й - password
-            preparedStatement.setString(1, newName);
-            preparedStatement.setString(2, newPassword);
-
-            // далее у preparedStatement получить executeQuery и соответственно получить resultSet
-            ResultSet resultSet = preparedStatement.executeQuery();
-            // у resultSet выбрать next
-            resultSet.next();
-
-            // взять resultSet -> getInt и передать сюда название колонки
-            // это у нас будет переменная userCount
-            int userCount = resultSet.getInt("cnt");
-
-            // проверяем значение userCount
-            if (userCount == 0) {
-                // если пользователя нет в БД, то создаем нового пользователя и вносим в БД
-                PreparedStatement preparedStatementNewUser = connection.prepareStatement("insert into schema_online_course.users(name, password) values (?, ?)");
-                preparedStatementNewUser.setString(1, newName);
-                preparedStatementNewUser.setString(2, newPassword);
-                ResultSet resultSetNewUser = preparedStatementNewUser.executeQuery();
-                resultSetNewUser.next();
-
-                return new User(newName, newPassword);
-            }
+            preparedStatementNewUser.executeUpdate();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-        // если userCount не равен 0, то кидаем ошибку
-        throw new RuntimeException("Вы вели что-то не то!");
+
+//        throw new InputMismatchException("Вы вели что-то не то!");
+        return new User(newName, newPassword);
     }
 }

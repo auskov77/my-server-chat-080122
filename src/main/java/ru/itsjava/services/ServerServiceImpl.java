@@ -27,7 +27,6 @@ public class ServerServiceImpl implements ServerService, Observable {
             // как проверить что клиент подключился - метод accept у socket'a
             Socket socket = serverSocket.accept();
 
-
             if (socket != null) { // если socket не пустой, т.е. подключился клиент
                 // чтобы запустить отдельный поток пишем new Thread, передаем сюда new ClientRunnable, ClientRunnable зависит от socket'a, от конкретного Oserver'a и от userDao
                 // стартуем новый поток в ClientRunnable
@@ -35,7 +34,6 @@ public class ServerServiceImpl implements ServerService, Observable {
                 thread.start(); // запускает новый поток
             }
         }
-
     }
 
     @Override
