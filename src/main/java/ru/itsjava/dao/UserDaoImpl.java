@@ -45,9 +45,8 @@ public class UserDaoImpl implements UserDao {
                 return new User(name, password);
             }
 
-        } catch (UserNotFoundException userNotFoundException) {
-            System.out.println("Пользователь с таким именем и паролем не найден в БД!");
-            userNotFoundException.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         // если userCount не равен 1, то кидаем ошибку
         throw new UserNotFoundException("Пользователь с таким именем и паролем не найден в БД!");
@@ -77,4 +76,14 @@ public class UserDaoImpl implements UserDao {
 //        throw new InputMismatchException("Вы вели что-то не то!");
         return new User(newName, newPassword);
     }
+
+//    // наличие пользователя в БД
+//    public void userPresence(){
+//
+//    }
+//
+//    // отсутствие пользователя в БД
+//    public void userNotPresence(){
+//
+//    }
 }

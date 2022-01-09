@@ -62,4 +62,9 @@ public class ServerServiceImpl implements ServerService, Observable {
             }
         }
     }
+
+//    // оправка сообщения конкретному пользователю
+//    public void notifySpecificObserver(String message, Observer observer){
+//
+//    }
 }
