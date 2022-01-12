@@ -8,6 +8,7 @@ import ru.itsjava.domain.UserNotFoundException;
 import ru.itsjava.utils.Props;
 
 import java.sql.*;
+import java.util.InputMismatchException;
 
 @AllArgsConstructor
 public class UserDaoImpl implements UserDao {
@@ -62,19 +63,21 @@ public class UserDaoImpl implements UserDao {
                 props.getValue("db.login"),
                 props.getValue("db.password")
         )) {
-            // если пользователя нет в БД, то создаем нового пользователя и вносим в БД
+            // создаем нового пользователя и вносим в БД
             PreparedStatement preparedStatementNewUser = connection.prepareStatement("insert into schema_online_course.users (name, password) values (?, ?)");
             preparedStatementNewUser.setString(1, newName);
             preparedStatementNewUser.setString(2, newPassword);
 
             preparedStatementNewUser.executeUpdate();
 
+            return new User(newName, newPassword);
+
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
 
-//        throw new InputMismatchException("Вы вели что-то не то!");
-        return new User(newName, newPassword);
+        throw new InputMismatchException("Вы вели что-то не то!");
+
     }
 
 //    // наличие пользователя в БД
