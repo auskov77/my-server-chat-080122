@@ -10,7 +10,7 @@ public class Props {
     @SneakyThrows
     public Props(){
         this.properties = new Properties();
-        properties.load(Props.class.getClassLoader().getResourceAsStream("applicaion.properties"));
+        properties.load(Props.class.getClassLoader().getResourceAsStream("application.properties"));
     }
 
     public String getValue(String key){

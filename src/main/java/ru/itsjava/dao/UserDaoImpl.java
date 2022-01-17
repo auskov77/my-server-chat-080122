@@ -17,7 +17,7 @@ public class UserDaoImpl implements UserDao {
     @SneakyThrows
     @Override
     public User findByNameAndPassword(String name, String password) {
-        // создаем Connection по данным файла applicaion.properties
+        // создаем Connection по данным файла application.properties
         try (Connection connection = DriverManager.getConnection(
                 props.getValue("db.url"),
                 props.getValue("db.login"),
