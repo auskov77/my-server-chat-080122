@@ -1,6 +1,7 @@
 package ru.itsjava.services;
 
 import lombok.SneakyThrows;
+import org.apache.log4j.Logger;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserDaoImpl;
 import ru.itsjava.utils.Props;
@@ -15,6 +16,7 @@ public class ServerServiceImpl implements ServerService, Observable {
     public final static int PORT = 8081; // порт, по которому подсоединяемся к нашему серверу
     public final List<Observer> observers = new ArrayList<>(); // массив, где хранятся наблюдатели - Observer'ы, те кто находится в чате
     private final UserDao userDao = new UserDaoImpl(new Props());
+    private static final Logger log = Logger.getLogger(ServerServiceImpl.class); // логгирование
 
     @SneakyThrows // обработка исключений
     @Override
@@ -32,6 +34,8 @@ public class ServerServiceImpl implements ServerService, Observable {
                 // стартуем новый поток в ClientRunnable
                 Thread thread = new Thread(new ClientRunnable(socket, this, userDao));
                 thread.start(); // запускает новый поток
+
+                log.info("Старт сервера");
             }
         }
     }
@@ -70,7 +74,7 @@ public class ServerServiceImpl implements ServerService, Observable {
 }
 
 //1. Реализовать повторную авторизацию                                                  -
-//2. Добавить логирование в проект (можно использовать Log4j)                           -
+//2. Добавить логирование в проект (можно использовать Log4j)                           - yes
 //3. Сохранить переписку в файл                                                         -
 //4. Создать доменную сущность сообщение Message с полями from, to text                 -
 //5. Создать MessageDao по работе с сообщениями и записывать сообщения в базу данных    -

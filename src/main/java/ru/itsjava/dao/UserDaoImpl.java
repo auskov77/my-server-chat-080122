@@ -3,6 +3,7 @@ package ru.itsjava.dao;
 import lombok.AllArgsConstructor;
 
 import lombok.SneakyThrows;
+import org.apache.log4j.Logger;
 import ru.itsjava.domain.User;
 import ru.itsjava.domain.UserIncorrectEntered;
 import ru.itsjava.domain.UserNotFoundException;
@@ -13,6 +14,7 @@ import java.sql.*;
 @AllArgsConstructor
 public class UserDaoImpl implements UserDao {
     private final Props props; // используем наши свойства из Props
+    private static final Logger log = Logger.getLogger(UserDaoImpl.class);
 
     @SneakyThrows
     @Override
@@ -44,10 +46,14 @@ public class UserDaoImpl implements UserDao {
             if (userCount == 1) {
                 // если верно возвращаем пользователя
                 return new User(name, password);
+            } else if (userCount == 0){
+                // приглашение пройти повторную авторизацию либо зарегистрировать нового пользователя
+                return null;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            log.error("Это сообщение ошибки");
         }
         // если userCount не равен 1, то кидаем ошибку
         throw new UserNotFoundException("Пользователь с таким именем и паролем не найден в БД!");
@@ -74,6 +80,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (SQLException exception) {
             exception.printStackTrace();
+            log.error("Это сообщение ошибки");
         }
 
 //        throw new InputMismatchException("Вы вели что-то не то!");
